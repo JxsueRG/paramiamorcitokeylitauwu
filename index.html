@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Amorcito | Para Ti</title>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
@@ -30,16 +30,16 @@
             <h2 class="section-title text-white">Nuestros Momentos</h2>
             <div class="gallery-grid">
                 <div class="photo-card" style="--i:1">
-                    <img src="img1.jpeg" alt="Recuerdo">
-                    <span>Donde todo empezó... Recuerdo perfectamente ese día. Te dije que hiciéramos "algo tranquilo" y tú me dijiste que "shi", así que quedamos de ir a La Lucha. Llegó el día y yo estaba nerviosísimo y, como siempre, llegando tarde. Cuando por fin llegué, te vi ahí sentadita en el Macdonals, me dijiste "hola, wey" y yo un "holaaa" todo nervioso. Entramos a la lucha y me empezaste a contar de tu amix jajaja, me soltaste todo el lore. Imposible olvidar tu soda italiana y el "muffin de mota"... digo, el brownie, jajaja. De ahí nos fuimos a la glorieta y recuerdo que me puse súper nervioso cuando te ayudé a subir y te toqué; fue muy bonito. Al final te llevé a tu casa y, aunque nos tardamos un vergo en llegar,  a casita uwu 2</span>
+                    <img src="img1.jpeg" alt="Recuerdo" loading="lazy">
+                    <span class="photo-description">Donde todo empezó... Recuerdo perfectamente ese día. Te dije que hiciéramos "algo tranquilo" y tú me dijiste que "shi", así que quedamos de ir a La Lucha. Llegó el día y yo estaba nerviosísimo y, como siempre, llegando tarde. Cuando por fin llegué, te vi ahí sentadita en el Macdonals, me dijiste "hola, wey" y yo un "holaaa" todo nervioso. Entramos a la lucha y me empezaste a contar de tu amix jajaja, me soltaste todo el lore. Imposible olvidar tu soda italiana y el "muffin de mota"... digo, el brownie, jajaja. De ahí nos fuimos a la glorieta y recuerdo que me puse súper nervioso cuando te ayudé a subir y te toqué; fue muy bonito. Al final te llevé a tu casa y, aunque nos tardamos un vergo en llegar,  a casita uwu 2</span>
                 </div>
                 <div class="photo-card" style="--i:2">
-                    <img src="IMG-20250912-WA0017.jpg" alt="Recuerdo">
-                    <span>Para mí, este momento es súper especial y bonito. Fue cuando salí de la uni y lo que más me encantó fue que me acompañaras en un día tan importante para mí. Además, te veías guapísima, como siempre, con ese vestidito</span>
+                    <img src="IMG-20250912-WA0017.jpg" alt="Recuerdo" loading="lazy">
+                    <span class="photo-description">Para mí, este momento es súper especial y bonito. Fue cuando salí de la uni y lo que más me encantó fue que me acompañaras en un día tan importante para mí. Además, te veías guapísima, como siempre, con ese vestidito</span>
                 </div>
                 <div class="photo-card" style="--i:3">
-                    <img src="IMG-20251019-WA0003.jpg" alt="Recuerdo">
-                    <span>La verdad, este fue el mejor viaje que hemos tenido juntos. Estuvo increíble, nos tomamos muchísimas fotitos y, lo mejor de todo, desbloqueamos un nuevo estado Quereyork, nuestro próximo hogar jajajajja.</span>
+                    <img src="IMG-20251019-WA0003.jpg" alt="Recuerdo" loading="lazy">
+                    <span class="photo-description">La verdad, este fue el mejor viaje que hemos tenido juntos. Estuvo increíble, nos tomamos muchísimas fotitos y, lo mejor de todo, desbloqueamos un nuevo estado Quereyork, nuestro próximo hogar jajajajja.</span>
                 </div>
             </div>
             <button onclick="changeStep(3)" class="btn-soft">Continuar</button>
@@ -56,22 +56,22 @@
 
         <section id="step-4" class="step">
             <div class="glass-card">
-                <img src="https://media.tenor.com/ICv_8vMvV_8AAAAi/love-you-bears.gif" class="gif-pro" style="width: 150px;">
+                <img src="https://media.tenor.com/ICv_8vMvV_8AAAAi/love-you-bears.gif" class="gif-pro" alt="Ositos de amor" style="width: 150px;">
                 <h1 class="soft-title">¿Quieres ser mi San Valentín?</h1>
                 <div class="btn-group">
                     <button id="si" class="btn-yes">Chi</button>
-                    <button id="no" class="btn-no" style="padding: 10px 20px; border-radius: 20px; border: none; cursor: pointer;">No</button>
+                    <button id="no" class="btn-no">No</button>
                 </div>
             </div>
         </section>
 
         <section id="step-5" class="step">
             <div class="glass-card video-card">
-                <h2 class="soft-title">Para ti, con todo mi amor... ❤️</h2>
+                <h2 class="soft-title">❤️</h2>
                 <div class="video-wrapper">
-                    <iframe width="100%" height="315" src="https://youtube.com/shorts/dIkUtfOXCOs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                    <iframe width="100%" height="315" src="https://www.youtube.com/embed/dIkUtfOXCOs" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen loading="lazy"></iframe>
                 </div>
-                <p class="soft-p">Esta es nuestra canción.</p>
+                <p class="soft-p">Teamo amorcito</p>
             </div>
         </section>
     </main>
@@ -80,6 +80,4 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
-
