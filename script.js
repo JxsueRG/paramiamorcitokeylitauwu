@@ -4,21 +4,44 @@ let index = 0;
 const textToType = "Solo quería recordarte cuánto te amo. Gracias por estar conmigo un año más, por regalarme tantas risas y por ser mi persona favorita en todo el mundo. Te amo mucho, amorcito. Atte. Josue";
 
 const mensajesNo = [
-    "¿Segura? 🥺",
-    "Piénsalo otra vez...",
-    "¡Casi! 😂",
+    "¿Segura?",
+    "Piénsalo otra vez",
+    "¡Casi!",
     "Nop, intenta de nuevo",
-    "¡Ni lo pienses! ❤️",
-    "Te falta velocidad ⚡",
+    "Te falta velocidad ",
     "Vamos, di que sí 💖",
-    "No es no jajaja 😝",
-    "Sí que quieres, lo sé 😏",
-    "Última oportunidad...",
-    "Me voy a poner triste 😢",
-    "Por favorcito 🙏",
+    "No es no JAAJJA",
+    "Sí que quieres, lo sé ",
+    "Última oportunidad",
+    "Me voy a poner triste",
+    "Por favorcito",
     "Te amo demasiado 💕",
     "Eres mi todo ✨"
 ];
+
+// VARIABLES PARA BOTÓN NO
+let btnNoMovimientos = 0;
+let btnNoEstaActivo = false;
+let ultimoMensajeIndex = -1;
+let btnNo = null;
+let btnSi = null;
+
+// FUNCIONES AUXILIARES
+function esDispositivoTactil() {
+    return ('ontouchstart' in window) || 
+           (navigator.maxTouchPoints > 0) || 
+           (navigator.msMaxTouchPoints > 0);
+}
+
+function obtenerNuevoMensaje() {
+    let nuevoIndex;
+    do {
+        nuevoIndex = Math.floor(Math.random() * mensajesNo.length);
+    } while (nuevoIndex === ultimoMensajeIndex && mensajesNo.length > 1);
+    
+    ultimoMensajeIndex = nuevoIndex;
+    return mensajesNo[nuevoIndex];
+}
 
 // 1. INICIALIZACIÓN DE YOUTUBE
 function onYouTubeIframeAPIReady() {
@@ -93,22 +116,34 @@ function changeStep(stepNumber) {
             // REINICIAR BOTÓN "NO" SI VOLVEMOS AL PASO 4
             if (stepNumber === 4) {
                 setTimeout(() => {
-                    const btnNo = document.getElementById('no');
-                    if (btnNo) {
-                        btnNo.textContent = "No";
-                        btnNo.style.position = 'relative';
-                        btnNo.style.left = 'auto';
-                        btnNo.style.top = 'auto';
-                        btnNo.style.zIndex = 'auto';
-                        btnNo.style.transition = 'all 0.3s ease';
-                        btnNo.style.background = 'linear-gradient(135deg, #ff6b6b, #ff5252)';
-                        btnNo.style.transform = 'scale(1)';
-                        btnNo.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.4)';
-                    }
+                    reiniciarBotonNo();
                 }, 100);
+                
+                // Configurar eventos del botón NO
+                setTimeout(configurarBotonNo, 200);
             }
         }
     }, 100);
+}
+
+function reiniciarBotonNo() {
+    if (!btnNo) return;
+    
+    btnNo.textContent = "No";
+    btnNo.classList.remove('btn-no-movil', 'vibrate', 'shake');
+    btnNo.style.position = 'relative';
+    btnNo.style.left = 'auto';
+    btnNo.style.top = 'auto';
+    btnNo.style.zIndex = '10';
+    btnNo.style.transform = 'scale(1)';
+    btnNo.style.background = 'linear-gradient(135deg, #ff6b6b, #ff5252)';
+    btnNo.style.boxShadow = '0 4px 15px rgba(255, 107, 107, 0.4)';
+    btnNo.style.transition = 'all 0.3s ease';
+    btnNo.style.width = '';
+    btnNo.style.height = '';
+    
+    btnNoMovimientos = 0;
+    btnNoEstaActivo = false;
 }
 
 // 3. MÁQUINA DE ESCRIBIR
@@ -130,237 +165,266 @@ function typeWriter() {
     }
 }
 
-// 4. FUNCIÓN PRINCIPAL CUANDO SE CARGA EL DOM
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM cargado, inicializando botón NO...");
+// 4. CONFIGURACIÓN DEL BOTÓN NO (VERSIÓN MÓVIL COMPATIBLE)
+function configurarBotonNo() {
+    btnNo = document.getElementById('no');
+    btnSi = document.getElementById('si');
     
-    const btnNo = document.getElementById('no');
-    const btnSi = document.getElementById('si');
-    let btnNoMovimientos = 0;
-    let btnNoEstaActivo = false;
-    let ultimoMensajeIndex = -1;
-
-    // 4.1 CONFIGURAR BOTÓN "NO" - ¡VERSIÓN CORREGIDA!
-    if (btnNo) {
-        console.log("Botón NO encontrado, configurando eventos...");
+    if (!btnNo) {
+        console.error("Botón NO no encontrado");
+        return;
+    }
+    
+    console.log("Configurando botón NO para móvil...");
+    
+    // Función para mover el botón
+    function moverBotonNo(event) {
+        if (btnNoEstaActivo) return;
+        btnNoEstaActivo = true;
         
-        // Función para obtener un mensaje que no sea el mismo anterior
-        function obtenerNuevoMensaje() {
-            let nuevoIndex;
-            do {
-                nuevoIndex = Math.floor(Math.random() * mensajesNo.length);
-            } while (nuevoIndex === ultimoMensajeIndex && mensajesNo.length > 1);
+        btnNoMovimientos++;
+        console.log(`Movimiento #${btnNoMovimientos}`);
+        
+        // 1. Cambiar texto
+        const nuevoMensaje = obtenerNuevoMensaje();
+        btnNo.textContent = nuevoMensaje;
+        
+        // 2. Animación de vibración
+        btnNo.classList.add('vibrate');
+        setTimeout(() => {
+            btnNo.classList.remove('vibrate');
+        }, 300);
+        
+        // 3. Prevenir comportamiento por defecto
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
             
-            ultimoMensajeIndex = nuevoIndex;
-            return mensajesNo[nuevoIndex];
+            if (event.type.includes('touch')) {
+                event.preventDefault();
+            }
         }
         
-        // Función principal para mover el botón
-        const manejarMovimientoBtnNo = function(event) {
-            if (btnNoEstaActivo) return;
-            btnNoEstaActivo = true;
-            
-            btnNoMovimientos++;
-            console.log(`Movimiento #${btnNoMovimientos} del botón NO`);
-            
-            // 1. OBTENER Y CAMBIAR EL TEXTO - ¡ESTE ES EL FIX!
-            const nuevoMensaje = obtenerNuevoMensaje();
-            console.log("Cambiando texto a:", nuevoMensaje);
-            btnNo.textContent = nuevoMensaje;
-            btnNo.innerText = nuevoMensaje; // Doble seguro
-            
-            // 2. ANIMACIÓN DE VIBRACIÓN
-            btnNo.classList.add('vibrate');
-            setTimeout(() => {
-                btnNo.classList.remove('vibrate');
-            }, 300);
-            
-            // 3. CALCULAR NUEVA POSICIÓN VISIBLE
-            const anchoVentana = window.innerWidth;
-            const altoVentana = window.innerHeight;
-            const anchoBoton = btnNo.offsetWidth || 120;
-            const altoBoton = btnNo.offsetHeight || 50;
-            
-            // Asegurar márgenes
-            const margen = 20;
-            const maxX = anchoVentana - anchoBoton - margen;
-            const maxY = altoVentana - altoBoton - margen;
-            
-            // Generar posición aleatoria visible
-            let nuevaX, nuevaY;
-            let intentos = 0;
-            
-            do {
-                nuevaX = Math.floor(Math.random() * maxX) + margen/2;
-                nuevaY = Math.floor(Math.random() * maxY) + margen/2;
-                intentos++;
-                
-                // Intentar evitar el centro donde está el cursor/dedo
-                const centroX = event ? (event.clientX || anchoVentana/2) : anchoVentana/2;
-                const centroY = event ? (event.clientY || altoVentana/2) : altoVentana/2;
-                const distancia = Math.sqrt(
-                    Math.pow(nuevaX + anchoBoton/2 - centroX, 2) + 
-                    Math.pow(nuevaY + altoBoton/2 - centroY, 2)
-                );
-                
-                if (distancia > 100 || intentos > 15) {
-                    break;
-                }
-            } while (intentos <= 15);
-            
-            // 4. APLICAR NUEVA POSICIÓN CON TRANSICIÓN
-            btnNo.style.position = 'fixed';
-            btnNo.style.left = `${nuevaX}px`;
-            btnNo.style.top = `${nuevaY}px`;
-            btnNo.style.zIndex = '9999';
-            btnNo.style.transition = 'left 0.5s ease-out, top 0.5s ease-out';
-            
-            // 5. EFECTOS ESPECIALES PROGRESIVOS
-            if (btnNoMovimientos >= 3) {
-                const colores = [
-                    'linear-gradient(135deg, #ff4081, #ff80ab)',
-                    'linear-gradient(135deg, #ff6b6b, #ff5252)',
-                    'linear-gradient(135deg, #ff8a00, #ff5252)',
-                    'linear-gradient(135deg, #e91e63, #ff4081)'
-                ];
-                
-                const colorIndex = (btnNoMovimientos - 3) % colores.length;
-                btnNo.style.background = colores[colorIndex];
-                btnNo.style.boxShadow = `0 0 30px ${colorIndex === 0 ? '#ff4081' : '#ff6b6b'}80`;
-                
-                if (btnNoMovimientos >= 6) {
-                    btnNo.style.transform = `scale(${1 + (btnNoMovimientos * 0.05)})`;
-                }
-            }
-            
-            // 6. FORZAR RE-PINTADO PARA ASEGURAR VISUALIZACIÓN
-            setTimeout(() => {
-                btnNo.style.display = 'none';
-                btnNo.offsetHeight; // Trigger reflow
-                btnNo.style.display = 'flex';
-            }, 10);
-            
-            // 7. RESET PARA NUEVO MOVIMIENTO
-            setTimeout(() => {
-                btnNoEstaActivo = false;
-            }, 400);
-            
-            // Prevenir comportamiento por defecto
-            if (event) {
-                event.preventDefault();
-                event.stopPropagation();
-                if (event.type === 'touchstart') {
-                    event.preventDefault();
-                }
-            }
-        };
+        // 4. Calcular nueva posición (optimizado para móvil)
+        const anchoVentana = window.innerWidth;
+        const altoVentana = window.innerHeight;
+        const anchoBoton = btnNo.offsetWidth || 140;
+        const altoBoton = btnNo.offsetHeight || 60;
         
-        // AGREGAR TODOS LOS EVENTOS POSIBLES
-        // Mouse events
-        btnNo.addEventListener('mouseenter', manejarMovimientoBtnNo);
-        btnNo.addEventListener('mouseover', manejarMovimientoBtnNo);
+        // Margen de seguridad
+        const margen = 40;
+        const maxX = anchoVentana - anchoBoton - margen;
+        const maxY = altoVentana - altoBoton - margen;
         
-        // Touch events para móvil (¡IMPORTANTE!)
+        // Obtener posición del toque
+        let touchX = anchoVentana / 2;
+        let touchY = altoVentana / 2;
+        
+        if (event) {
+            if (event.touches && event.touches[0]) {
+                touchX = event.touches[0].clientX;
+                touchY = event.touches[0].clientY;
+            } else if (event.clientX && event.clientY) {
+                touchX = event.clientX;
+                touchY = event.clientY;
+            }
+        }
+        
+        // Buscar posición alejada del toque
+        let nuevaX, nuevaY;
+        let intentos = 0;
+        
+        do {
+            nuevaX = margen + Math.random() * maxX;
+            nuevaY = margen + Math.random() * maxY;
+            intentos++;
+            
+            // Calcular distancia al punto de toque
+            const distancia = Math.sqrt(
+                Math.pow(nuevaX + anchoBoton/2 - touchX, 2) + 
+                Math.pow(nuevaY + altoBoton/2 - touchY, 2)
+            );
+            
+            // La posición es buena si está suficientemente lejos
+            if (distancia > 150 || intentos > 25) {
+                break;
+            }
+        } while (intentos <= 25);
+        
+        // 5. Aplicar nueva posición
+        btnNo.classList.add('btn-no-movil');
+        btnNo.style.left = `${nuevaX}px`;
+        btnNo.style.top = `${nuevaY}px`;
+        btnNo.style.zIndex = '9999';
+        
+        // 6. Efectos especiales progresivos
+        if (btnNoMovimientos >= 3) {
+            const colores = [
+                'linear-gradient(135deg, #ff4081, #ff80ab)',
+                'linear-gradient(135deg, #ff6b6b, #ff5252)',
+                'linear-gradient(135deg, #ff8a00, #ff5252)',
+                'linear-gradient(135deg, #e91e63, #ff4081)'
+            ];
+            
+            const colorIndex = (btnNoMovimientos - 3) % colores.length;
+            btnNo.style.background = colores[colorIndex];
+            btnNo.style.boxShadow = `0 0 25px ${colorIndex === 0 ? '#ff4081' : '#ff6b6b'}`;
+            
+            if (btnNoMovimientos >= 6) {
+                const escala = 1 + (btnNoMovimientos * 0.04);
+                btnNo.style.transform = `scale(${Math.min(escala, 1.3)})`;
+            }
+        }
+        
+        // 7. Permitir nuevos movimientos después de un tiempo
+        setTimeout(() => {
+            btnNoEstaActivo = false;
+        }, 400);
+    }
+    
+    // LIMPIAR EVENTOS ANTERIORES
+    const nuevoBtnNo = btnNo.cloneNode(true);
+    btnNo.parentNode.replaceChild(nuevoBtnNo, btnNo);
+    btnNo = nuevoBtnNo;
+    btnNo.id = 'no';
+    
+    // CONFIGURAR EVENTOS PARA MÓVIL
+    const esMovil = esDispositivoTactil();
+    
+    if (esMovil) {
+        console.log("Configurando para dispositivo táctil");
+        
+        // Touch events (móvil)
         btnNo.addEventListener('touchstart', function(event) {
-            console.log("Touch detectado en botón NO");
-            manejarMovimientoBtnNo(event);
+            console.log("Touchstart detectado");
+            moverBotonNo(event);
         }, { passive: false });
         
-        btnNo.addEventListener('touchenter', manejarMovimientoBtnNo);
+        btnNo.addEventListener('touchenter', function(event) {
+            moverBotonNo(event);
+        }, { passive: false });
         
-        // Click event como respaldo
-        btnNo.addEventListener('click', function(event) {
+        // También mover al acercar el dedo
+        btnNo.addEventListener('touchmove', function(event) {
             event.preventDefault();
-            console.log("Click en botón NO");
-            manejarMovimientoBtnNo(event);
-        });
-        
-        // También mover aleatoriamente cada cierto tiempo
-        setInterval(function() {
-            if (!btnNoEstaActivo && Math.random() > 0.7) {
-                console.log("Movimiento automático del botón NO");
-                manejarMovimientoBtnNo();
-            }
-        }, 4000);
-        
-        // DEBUG: Agregar consola para verificar
-        console.log("Eventos del botón NO configurados correctamente");
-    } else {
-        console.error("ERROR: No se encontró el botón con id 'no'");
+        }, { passive: false });
     }
-
-    // 4.2 CONFIGURAR BOTÓN "SÍ"
+    
+    // Mouse events (escritorio)
+    btnNo.addEventListener('mouseenter', moverBotonNo);
+    btnNo.addEventListener('mouseover', moverBotonNo);
+    
+    // Click como respaldo universal
+    btnNo.addEventListener('click', function(event) {
+        event.preventDefault();
+        moverBotonNo(event);
+    });
+    
+    // Movimiento automático ocasional
+    const intervaloMovimiento = setInterval(() => {
+        if (document.getElementById('step-4').classList.contains('active') && 
+            !btnNoEstaActivo && Math.random() > 0.85) {
+            moverBotonNo();
+        }
+    }, 3000);
+    
+    // Guardar referencia para limpiar luego
+    window.btnNoInterval = intervaloMovimiento;
+    
+    // CONFIGURAR BOTÓN SÍ
     if (btnSi) {
-        btnSi.addEventListener('click', function() {
-            console.log("¡Dijo que SÍ! ❤️");
-            
-            // EFECTOS DE CONFETI
-            if (typeof confetti === "function") {
-                confetti({
-                    particleCount: 300,
-                    spread: 100,
-                    origin: { y: 0.6 }
-                });
-                
-                setTimeout(() => {
-                    confetti({
-                        particleCount: 200,
-                        angle: 60,
-                        spread: 80,
-                        origin: { x: 0.2 }
-                    });
-                    
-                    confetti({
-                        particleCount: 200,
-                        angle: 120,
-                        spread: 80,
-                        origin: { x: 0.8 }
-                    });
-                }, 300);
-            }
-            
-            // CAMBIAR INTERFAZ
-            const titulo = document.querySelector('#step-4 .soft-title');
-            const grupoBotones = document.querySelector('.btn-group');
-            const contenedor = document.querySelector('#step-4 .glass-card');
-            
-            if (titulo) {
-                titulo.innerHTML = "¡SABÍA QUE DIRÍAS QUE CHI! ❤️";
-                titulo.style.color = '#ff4081';
-                titulo.style.fontSize = '1.8rem';
-            }
-            
-            if (grupoBotones) {
-                grupoBotones.style.opacity = '0';
-                grupoBotones.style.transition = 'opacity 0.5s';
-                setTimeout(() => {
-                    grupoBotones.style.display = 'none';
-                }, 500);
-            }
-            
-            // AGREGAR MENSAJE EXTRA
-            const mensajeExtra = document.createElement('p');
-            mensajeExtra.className = 'soft-p';
-            mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida <br><small>Ahora mira nuestro video</small>";
-            mensajeExtra.style.marginTop = '20px';
-            mensajeExtra.style.animation = 'fadeIn 2s';
-            mensajeExtra.style.fontSize = '1.1rem';
-            
-            if (contenedor) {
-                contenedor.appendChild(mensajeExtra);
-            }
-            
-            // PASAR AL VIDEO
-            setTimeout(() => {
-                changeStep(5);
-            }, 4000);
-        });
+        btnSi.addEventListener('click', manejarBotonSi);
     }
+}
 
-    // 5. CREAR CORAZONES FLOTANTES
+// 5. MANEJAR BOTÓN SÍ
+function manejarBotonSi() {
+    console.log("¡Dijo que SÍ! ❤️");
+    
+    // Limpiar intervalo del botón NO
+    if (window.btnNoInterval) {
+        clearInterval(window.btnNoInterval);
+    }
+    
+    // EFECTOS DE CONFETI
+    if (typeof confetti === "function") {
+        confetti({
+            particleCount: 300,
+            spread: 100,
+            origin: { y: 0.6 }
+        });
+        
+        setTimeout(() => {
+            confetti({
+                particleCount: 200,
+                angle: 60,
+                spread: 80,
+                origin: { x: 0.2 }
+            });
+            
+            confetti({
+                particleCount: 200,
+                angle: 120,
+                spread: 80,
+                origin: { x: 0.8 }
+            });
+        }, 300);
+    }
+    
+    // CAMBIAR INTERFAZ
+    const titulo = document.querySelector('#step-4 .soft-title');
+    const grupoBotones = document.querySelector('.btn-group');
+    const contenedor = document.querySelector('#step-4 .glass-card');
+    
+    if (titulo) {
+        titulo.innerHTML = "¡SABÍA QUE DIRÍAS QUE SÍ! ❤️";
+        titulo.style.color = '#ff4081';
+        titulo.style.fontSize = '1.8rem';
+        titulo.style.animation = 'pulse 2s infinite';
+    }
+    
+    if (grupoBotones) {
+        grupoBotones.style.opacity = '0';
+        grupoBotones.style.transition = 'opacity 0.5s';
+        setTimeout(() => {
+            grupoBotones.style.display = 'none';
+        }, 500);
+    }
+    
+    // AGREGAR MENSAJE EXTRA
+    const mensajeExtra = document.createElement('p');
+    mensajeExtra.className = 'soft-p';
+    mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida 💖<br><small>Ahora mira nuestro video</small>";
+    mensajeExtra.style.marginTop = '20px';
+    mensajeExtra.style.animation = 'fadeIn 2s';
+    mensajeExtra.style.fontSize = '1.1rem';
+    
+    if (contenedor) {
+        contenedor.appendChild(mensajeExtra);
+    }
+    
+    // PASAR AL VIDEO
+    setTimeout(() => {
+        changeStep(5);
+    }, 4000);
+}
+
+// 6. INICIALIZACIÓN CUANDO CARGA EL DOM
+document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM cargado - Inicializando aplicación");
+    
+    // Configurar botón NO cuando esté disponible
+    const checkBotonNo = setInterval(() => {
+        if (document.getElementById('no')) {
+            clearInterval(checkBotonNo);
+            configurarBotonNo();
+        }
+    }, 100);
+    
+    // Crear corazones flotantes
     setInterval(createHeart, 350);
     
-    // 6. FORZAR REPRODUCCIÓN EN MÓVILES
+    // Forzar reproducción en móviles
     function forzarReproduccionMusica() {
         if (player && typeof player.playVideo === "function") {
             player.playVideo();
@@ -368,15 +432,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
+    // Eventos para iniciar música
     document.addEventListener('touchstart', forzarReproduccionMusica, { once: true });
     document.addEventListener('click', forzarReproduccionMusica, { once: true });
     
-    // 7. DEBUG: Mostrar en consola que todo está listo
-    console.log("Aplicación completamente inicializada");
-    console.log("Botón NO listo para cambiar mensajes:", btnNo ? "SÍ" : "NO");
+    console.log("Aplicación lista - Botón NO configurado para móvil");
 });
 
-// 5. FUNCIÓN PARA CREAR CORAZONES
+// 7. FUNCIÓN PARA CREAR CORAZONES
 function createHeart() {
     const bg = document.getElementById('bg-animation');
     if (!bg) return;
@@ -407,19 +470,42 @@ function createHeart() {
     }, duracion * 1000);
 }
 
-// 6. MANEJAR REDIMENSIONAMIENTO
+// 8. MANEJAR REDIMENSIONAMIENTO
 window.addEventListener('resize', function() {
     const btnNo = document.getElementById('no');
-    if (btnNo && btnNo.style.position === 'fixed') {
+    if (btnNo && btnNo.classList.contains('btn-no-movil')) {
         const rect = btnNo.getBoundingClientRect();
         const anchoVentana = window.innerWidth;
         const altoVentana = window.innerHeight;
+        const anchoBoton = btnNo.offsetWidth;
+        const altoBoton = btnNo.offsetHeight;
         
-        if (rect.left < 10 || rect.top < 10 || 
-            rect.right > anchoVentana - 10 || rect.bottom > altoVentana - 10) {
-            btnNo.style.left = `${Math.max(10, Math.min(rect.left, anchoVentana - rect.width - 10))}px`;
-            btnNo.style.top = `${Math.max(10, Math.min(rect.top, altoVentana - rect.height - 10))}px`;
-        }
+        // Ajustar si está fuera de pantalla
+        let nuevaX = parseFloat(btnNo.style.left) || rect.left;
+        let nuevaY = parseFloat(btnNo.style.top) || rect.top;
+        
+        if (nuevaX < 10) nuevaX = 10;
+        if (nuevaY < 10) nuevaY = 10;
+        if (nuevaX + anchoBoton > anchoVentana - 10) nuevaX = anchoVentana - anchoBoton - 10;
+        if (nuevaY + altoBoton > altoVentana - 10) nuevaY = altoVentana - altoBoton - 10;
+        
+        btnNo.style.left = `${nuevaX}px`;
+        btnNo.style.top = `${nuevaY}px`;
     }
 });
 
+// 9. PREVENIR ZOOM EN MÓVIL
+document.addEventListener('touchstart', function(event) {
+    if (event.touches.length > 1) {
+        event.preventDefault();
+    }
+}, { passive: false });
+
+let lastTouchEnd = 0;
+document.addEventListener('touchend', function(event) {
+    const now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+    }
+    lastTouchEnd = now;
+}, false);
