@@ -393,7 +393,7 @@ function manejarBotonSi() {
     // AGREGAR MENSAJE EXTRA
     const mensajeExtra = document.createElement('p');
     mensajeExtra.className = 'soft-p';
-    mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida <br><small>Ahora mira nuestro video</small>";
+    mensajeExtra.innerHTML = " <br><small>Ahora mira nuestro video</small>";
     mensajeExtra.style.marginTop = '20px';
     mensajeExtra.style.animation = 'fadeIn 2s';
     mensajeExtra.style.fontSize = '1.1rem';
@@ -508,4 +508,5 @@ document.addEventListener('touchend', function(event) {
     }
     lastTouchEnd = now;
 }, false);
+
 
