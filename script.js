@@ -6,17 +6,16 @@ const textToType = "Solo quería recordarte cuánto te amo. Gracias por estar co
 const mensajesNo = [
     "¿Segura?",
     "Piénsalo otra vez",
-    "¡Casi!",
+    "Casi",
     "Nop, intenta de nuevo",
     "Te falta velocidad ",
-    "Vamos, di que sí 💖",
+    "di que sí",
     "No es no JAAJJA",
-    "Sí que quieres, lo sé ",
+    "Sí que quieres, yo lo sé ",
     "Última oportunidad",
     "Me voy a poner triste",
     "Por favorcito",
-    "Te amo demasiado 💕",
-    "Eres mi todo ✨"
+    "Teamo miamor ",
 ];
 
 // VARIABLES PARA BOTÓN NO
@@ -377,7 +376,7 @@ function manejarBotonSi() {
     const contenedor = document.querySelector('#step-4 .glass-card');
     
     if (titulo) {
-        titulo.innerHTML = "¡SABÍA QUE DIRÍAS QUE SÍ! ❤️";
+        titulo.innerHTML = "SABÍA QUE DIRÍAS QUE CHI";
         titulo.style.color = '#ff4081';
         titulo.style.fontSize = '1.8rem';
         titulo.style.animation = 'pulse 2s infinite';
@@ -394,7 +393,7 @@ function manejarBotonSi() {
     // AGREGAR MENSAJE EXTRA
     const mensajeExtra = document.createElement('p');
     mensajeExtra.className = 'soft-p';
-    mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida 💖<br><small>Ahora mira nuestro video</small>";
+    mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida <br><small>Ahora mira nuestro video</small>";
     mensajeExtra.style.marginTop = '20px';
     mensajeExtra.style.animation = 'fadeIn 2s';
     mensajeExtra.style.fontSize = '1.1rem';
@@ -509,3 +508,4 @@ document.addEventListener('touchend', function(event) {
     }
     lastTouchEnd = now;
 }, false);
+
