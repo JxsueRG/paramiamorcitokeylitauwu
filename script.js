@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const contenedor = document.querySelector('#step-4 .glass-card');
             
             if (titulo) {
-                titulo.innerHTML = "¡SABÍA QUE DIRÍAS QUE SÍ! ❤️";
+                titulo.innerHTML = "¡SABÍA QUE DIRÍAS QUE CHI! ❤️";
                 titulo.style.color = '#ff4081';
                 titulo.style.fontSize = '1.8rem';
             }
@@ -341,7 +341,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // AGREGAR MENSAJE EXTRA
             const mensajeExtra = document.createElement('p');
             mensajeExtra.className = 'soft-p';
-            mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida 💖<br><small>Ahora mira nuestro video</small>";
+            mensajeExtra.innerHTML = "Eres la mejor decisión de mi vida <br><small>Ahora mira nuestro video</small>";
             mensajeExtra.style.marginTop = '20px';
             mensajeExtra.style.animation = 'fadeIn 2s';
             mensajeExtra.style.fontSize = '1.1rem';
@@ -422,3 +422,4 @@ window.addEventListener('resize', function() {
         }
     }
 });
+
