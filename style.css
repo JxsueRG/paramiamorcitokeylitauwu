@@ -12,6 +12,7 @@
     box-sizing: border-box; 
     -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
+    touch-action: manipulation;
 }
 
 html, body {
@@ -176,6 +177,10 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    position: relative;
 }
 
 .btn-soft {
@@ -187,6 +192,7 @@ body {
     background: linear-gradient(135deg, #f8ad9d, #fbc4ab);
     color: white;
     box-shadow: 0 4px 15px rgba(248, 173, 157, 0.4);
+    z-index: 10;
 }
 
 .btn-no {
@@ -195,6 +201,23 @@ body {
     box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
     position: relative;
     min-width: 100px;
+    z-index: 100;
+    transition: all 0.3s ease !important;
+}
+
+/* ESTILOS ESPECÍFICOS PARA BOTÓN NO EN MÓVIL */
+@media (hover: none) and (pointer: coarse) {
+    .btn-no {
+        min-height: 60px;
+        min-width: 140px;
+        font-size: 1.1rem;
+        padding: 18px 35px;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .btn-no:active {
+        transform: scale(0.95);
+    }
 }
 
 /* GRUPO DE BOTONES */
@@ -205,12 +228,25 @@ body {
     margin-top: 25px;
     flex-wrap: wrap;
     width: 100%;
+    position: relative;
+    z-index: 5;
 }
 
 .btn-group button {
     flex: 1;
     min-width: 120px;
     max-width: 150px;
+}
+
+@media (max-width: 480px) {
+    .btn-group {
+        gap: 20px;
+    }
+    
+    .btn-group button {
+        min-width: 140px;
+        max-width: 160px;
+    }
 }
 
 /* MÁQUINA DE ESCRIBIR */
@@ -271,6 +307,29 @@ body {
     }
 }
 
+/* ANIMACIONES PARA BOTÓN NO */
+@keyframes vibrate {
+    0% { transform: translateX(0) scale(1); }
+    25% { transform: translateX(-5px) scale(1.05); }
+    50% { transform: translateX(5px) scale(1.05); }
+    75% { transform: translateX(-5px) scale(1.05); }
+    100% { transform: translateX(0) scale(1); }
+}
+
+.vibrate {
+    animation: vibrate 0.3s ease-in-out !important;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
 /* MEDIA QUERIES PARA DIFERENTES TAMAÑOS */
 @media (max-width: 480px) {
     .glass-card {
@@ -291,11 +350,6 @@ body {
         flex-direction: column;
         align-items: center;
     }
-    
-    .btn-group button {
-        width: 80%;
-        max-width: 200px;
-    }
 }
 
 @media (max-width: 360px) {
@@ -313,15 +367,10 @@ body {
     }
 }
 
-/* ANIMACIÓN DE VIBRACIÓN PARA EL BOTÓN "NO" */
-@keyframes vibrate {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
-}
-
-.vibrate {
-    animation: vibrate 0.3s ease-in-out;
+/* ESTILOS PARA BOTÓN NO CUANDO SE MUEVE */
+.btn-no-movil {
+    position: fixed !important;
+    z-index: 9999 !important;
+    transition: left 0.3s ease-out, top 0.3s ease-out !important;
+    will-change: left, top;
 }
